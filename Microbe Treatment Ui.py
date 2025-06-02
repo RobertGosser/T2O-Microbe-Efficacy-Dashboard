@@ -1365,43 +1365,28 @@ def main():
                         'Oil Production (BBL/day)', 
                         'Water Production (BBL/day)', 
                         'Gas Production (MCF/day)', 
-                        'Days with Data',
-                        'Total Treatments',
-                        'Total Treatment Cost',
-                        'Average Monthly Cost'
                     ],
                     'Pre-Treatment': [
                         f"{analysis['pre_oil_avg']:.2f}",
                         f"{analysis['pre_water_avg']:.2f}",
                         f"{analysis['pre_gas_avg']:.2f}",
-                        f"{analysis['pre_days_actual']}",
-                        "N/A",
-                        "N/A",
-                        "N/A"
                     ],
                     'Post-Treatment': [
                         f"{analysis['post_oil_avg']:.2f}",
                         f"{analysis['post_water_avg']:.2f}",
                         f"{analysis['post_gas_avg']:.2f}",
-                        f"{analysis['post_days_actual']}",
-                        f"{len(analysis['all_treatments'])}",
-                        f"${len(analysis['all_treatments']) * 450:,.0f}",
-                        f"${avg_monthly_cost:,.0f}"
                     ],
                     'Change (%)': [
                         f"{analysis['oil_change_pct']:.1f}%",
                         f"{analysis['water_change_pct']:.1f}%",
                         f"{analysis['gas_change_pct']:.1f}%",
-                        "N/A",
-                        "N/A",
-                        "N/A",
-                        "N/A"
                     ]
                 }
 
                 # For Production Analysis tab (use dynamic post_days):
                 st.caption(f"Analysis Complete Via the Following Period: All non-zero days before treatment · Post-window: {post_days} days")
 
+                # Create analysis summary table
                 analysis_df = pd.DataFrame(enhanced_analysis_data)
                 st.dataframe(analysis_df, use_container_width=True)
 
