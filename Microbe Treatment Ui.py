@@ -1402,7 +1402,7 @@ def main():
                 # For Production Analysis tab (use dynamic post_days):
                 st.caption(f"Analysis Complete Via the Following Period: All non-zero days before treatment · Post-window: {post_days} days")
 
-                analysis_df = pd.DataFrame(analysis_table_data)
+                analysis_df = pd.DataFrame(enhanced_analysis_data)
                 st.dataframe(analysis_df, use_container_width=True)
 
                 # Download option for analysis table
