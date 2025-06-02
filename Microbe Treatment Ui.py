@@ -451,54 +451,6 @@ def compute_cumulative_impact(well, production_data, treatments_data, pre_days, 
             })
     
     return pd.DataFrame(results)
-# -------------------------------------------------------------------------------
-# Calculate Average Monthly Cost for Treatments on a Well (Revised):
-# -------------------------------------------------------------------------------
-def calculate_avg_monthly_cost_for_treatments_on_well(well_name, treatments_data, production_data, treatment_cost=450):
-    """
-    Calculate the average monthly cost for a well based on treatments since primary treatment
-    and months of production data available after the primary treatment.
-    
-    Parameters:
-    - well_name (str): Name of the well
-    - treatments_data (DataFrame): Treatment records
-    - production_data (DataFrame): Production history
-    - treatment_cost (float): Cost per treatment (default $450)
-    
-    Returns:
-    - float: Average monthly cost, or 0 if no data available
-    """
-    # Get treatments for this well
-    well_treatments = treatments_data[treatments_data['Well'] == well_name]
-    if well_treatments.empty:
-        return 0
-    
-    # Get primary (first) treatment date
-    primary_treatment_date = well_treatments['TreatmentDate'].min()
-    
-    # Get production data for this well after primary treatment
-    well_prod = production_data[production_data['Well'] == well_name]
-    post_treatment_prod = well_prod[
-        (well_prod['Date'] > primary_treatment_date) &
-        ((well_prod['OilProd'] > 0) | (well_prod['WaterProd'] > 0) | (well_prod['GasProd'] > 0))
-    ]
-    
-    if post_treatment_prod.empty:
-        return 0
-    
-    # Calculate months from primary treatment to last production date
-    last_production_date = post_treatment_prod['Date'].max()
-    months_span = ((last_production_date - primary_treatment_date).days / 30.44)
-    
-    if months_span <= 0:
-        return 0
-    
-    # Calculate total cost for all treatments on this well
-    total_treatments = len(well_treatments)
-    total_cost = total_treatments * treatment_cost
-    
-    # Return average monthly cost
-    return total_cost / months_span
 # =============================================================================
 
 
@@ -677,6 +629,54 @@ def safe_format_date(date_series):
     except:
         # Fallback: convert all to string if formatting fails
         return date_series.astype(str)
+# -------------------------------------------------------------------------------
+# Calculate Average Monthly Cost for Treatments on a Well (Revised):
+# -------------------------------------------------------------------------------
+def calculate_avg_monthly_cost_for_well(well_name, treatments_data, production_data, treatment_cost=450):
+    """
+    Calculate the average monthly cost for a well based on treatments since primary treatment
+    and months of production data available after the primary treatment.
+    
+    Parameters:
+    - well_name (str): Name of the well
+    - treatments_data (DataFrame): Treatment records
+    - production_data (DataFrame): Production history
+    - treatment_cost (float): Cost per treatment (default $450)
+    
+    Returns:
+    - float: Average monthly cost, or 0 if no data available
+    """
+    # Get treatments for this well
+    well_treatments = treatments_data[treatments_data['Well'] == well_name]
+    if well_treatments.empty:
+        return 0
+    
+    # Get primary (first) treatment date
+    primary_treatment_date = well_treatments['TreatmentDate'].min()
+    
+    # Get production data for this well after primary treatment
+    well_prod = production_data[production_data['Well'] == well_name]
+    post_treatment_prod = well_prod[
+        (well_prod['Date'] > primary_treatment_date) &
+        ((well_prod['OilProd'] > 0) | (well_prod['WaterProd'] > 0) | (well_prod['GasProd'] > 0))
+    ]
+    
+    if post_treatment_prod.empty:
+        return 0
+    
+    # Calculate months from primary treatment to last production date
+    last_production_date = post_treatment_prod['Date'].max()
+    months_span = ((last_production_date - primary_treatment_date).days / 30.44)
+    
+    if months_span <= 0:
+        return 0
+    
+    # Calculate total cost for all treatments on this well
+    total_treatments = len(well_treatments)
+    total_cost = total_treatments * treatment_cost
+    
+    # Return average monthly cost
+    return total_cost / months_span
 # =============================================================================
 
 
