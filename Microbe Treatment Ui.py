@@ -451,6 +451,54 @@ def compute_cumulative_impact(well, production_data, treatments_data, pre_days, 
             })
     
     return pd.DataFrame(results)
+# -------------------------------------------------------------------------------
+# Calculate Average Monthly Cost for Treatments on a Well (Revised):
+# -------------------------------------------------------------------------------
+def calculate_avg_monthly_cost_for_treatments_on_well(well_name, treatments_data, production_data, treatment_cost=450):
+    """
+    Calculate the average monthly cost for a well based on treatments since primary treatment
+    and months of production data available after the primary treatment.
+    
+    Parameters:
+    - well_name (str): Name of the well
+    - treatments_data (DataFrame): Treatment records
+    - production_data (DataFrame): Production history
+    - treatment_cost (float): Cost per treatment (default $450)
+    
+    Returns:
+    - float: Average monthly cost, or 0 if no data available
+    """
+    # Get treatments for this well
+    well_treatments = treatments_data[treatments_data['Well'] == well_name]
+    if well_treatments.empty:
+        return 0
+    
+    # Get primary (first) treatment date
+    primary_treatment_date = well_treatments['TreatmentDate'].min()
+    
+    # Get production data for this well after primary treatment
+    well_prod = production_data[production_data['Well'] == well_name]
+    post_treatment_prod = well_prod[
+        (well_prod['Date'] > primary_treatment_date) &
+        ((well_prod['OilProd'] > 0) | (well_prod['WaterProd'] > 0) | (well_prod['GasProd'] > 0))
+    ]
+    
+    if post_treatment_prod.empty:
+        return 0
+    
+    # Calculate months from primary treatment to last production date
+    last_production_date = post_treatment_prod['Date'].max()
+    months_span = ((last_production_date - primary_treatment_date).days / 30.44)
+    
+    if months_span <= 0:
+        return 0
+    
+    # Calculate total cost for all treatments on this well
+    total_treatments = len(well_treatments)
+    total_cost = total_treatments * treatment_cost
+    
+    # Return average monthly cost
+    return total_cost / months_span
 # =============================================================================
 
 
@@ -459,7 +507,6 @@ def compute_cumulative_impact(well, production_data, treatments_data, pre_days, 
 
 ## ------------------------------------------------------------------------------- 
 # OUTLIER WELL FILTERING SYSTEM
-# List of known refrac or biased outlier wells
 OUTLIER_WELLS = ['PAUL MOSS 4 (G)']
 ## ------------------------------------------------------------------------------- 
 
@@ -1270,8 +1317,8 @@ def main():
             )
             
             if analysis:
-                # Key metrics
-                col1, col2, col3, col4 = st.columns(4)
+                # Key metrics - UPDATED to include Average Monthly Cost
+                col1, col2, col3, col4, col5 = st.columns(5)  # Changed from 4 to 5 columns
                 with col1:
                     st.metric(
                         "Oil Change", 
@@ -1293,6 +1340,16 @@ def main():
                 with col4:
                     treatment_date_str = analysis['treatment_date'].strftime('%Y-%m-%d')
                     st.metric("Primary Treatment Date", treatment_date_str)
+                with col5:
+                    # NEW: Calculate and display Average Monthly Cost
+                    avg_monthly_cost = calculate_avg_monthly_cost_for_well(
+                        selected_well, treatments, prod_history
+                    )
+                    st.metric(
+                        "Avg Monthly Cost", 
+                        f"${avg_monthly_cost:,.0f}",
+                        help="Average monthly cost based on all treatments and production months since primary treatment"
+                    )
                 
                 # Production chart
                 prod_fig = create_production_chart(analysis, selected_well)
@@ -1302,25 +1359,42 @@ def main():
                 window_text = f"{post_days} days" if post_days != 9999 else "Max Available"
                 st.subheader(f"Analysis Period Details - Post-Treatment Window: {window_text}")
                 
-                # Create analysis summary table
-                analysis_table_data = {
-                    'Metric': ['Oil Production (BBL/day)', 'Water Production (BBL/day)', 'Gas Production (MCF/day)', 'Days with Data'],
+                # Enhanced analysis table with cost information
+                enhanced_analysis_data = {
+                    'Metric': [
+                        'Oil Production (BBL/day)', 
+                        'Water Production (BBL/day)', 
+                        'Gas Production (MCF/day)', 
+                        'Days with Data',
+                        'Total Treatments',
+                        'Total Treatment Cost',
+                        'Average Monthly Cost'
+                    ],
                     'Pre-Treatment': [
                         f"{analysis['pre_oil_avg']:.2f}",
                         f"{analysis['pre_water_avg']:.2f}",
                         f"{analysis['pre_gas_avg']:.2f}",
-                        f"{analysis['pre_days_actual']}"
+                        f"{analysis['pre_days_actual']}",
+                        "N/A",
+                        "N/A",
+                        "N/A"
                     ],
                     'Post-Treatment': [
                         f"{analysis['post_oil_avg']:.2f}",
                         f"{analysis['post_water_avg']:.2f}",
                         f"{analysis['post_gas_avg']:.2f}",
-                        f"{analysis['post_days_actual']}"
+                        f"{analysis['post_days_actual']}",
+                        f"{len(analysis['all_treatments'])}",
+                        f"${len(analysis['all_treatments']) * 450:,.0f}",
+                        f"${avg_monthly_cost:,.0f}"
                     ],
                     'Change (%)': [
                         f"{analysis['oil_change_pct']:.1f}%",
                         f"{analysis['water_change_pct']:.1f}%",
                         f"{analysis['gas_change_pct']:.1f}%",
+                        "N/A",
+                        "N/A",
+                        "N/A",
                         "N/A"
                     ]
                 }
