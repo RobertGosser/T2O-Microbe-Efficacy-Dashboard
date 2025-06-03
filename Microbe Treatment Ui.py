@@ -1201,7 +1201,7 @@ def main():
     if well_coords.empty:
         tabs = st.tabs([
             "📈 Production Analysis",
-            "📊 Treatment Impact",
+            #"📊 Treatment Impact",
             "🛠️ Workover Records",
             "📋 Program Summary",
             "💰 Economics"
@@ -1211,7 +1211,7 @@ def main():
         tabs = st.tabs([
             "🗺️ Well Map",
             "📈 Production Analysis",
-            "📊 Treatment Impact", 
+            #"📊 Treatment Impact", 
             "🛠️ Workover Records",
             "📋 Program Summary",
             "💰 Economics"
@@ -1410,7 +1410,7 @@ def main():
                 st.error(f"Insufficient data for analysis of well {selected_well}. Need at least {MIN_DATA_DAYS} days of data in both pre and post periods.")
 
     tab_index += 1
-    
+    '''
     # =============================================================================
     # TAB 3: TREATMENT IMPACT📊 - UPDATED VERSION
     # =============================================================================
@@ -1474,7 +1474,7 @@ def main():
                 st.warning(f"No treatment impact data available for well {selected_well}")
 
     tab_index += 1
-    
+    '''
     # =============================================================================
     # TAB 4: WORKOVER RECORDS🛠️
     # =============================================================================
