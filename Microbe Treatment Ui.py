@@ -1488,7 +1488,7 @@ def main():
             #else:
                 #st.warning(f"No treatment impact data available for well {selected_well}")
 
-    #tab_index += 1
+    tab_index += 1
    
     # =============================================================================
     # TAB 4: WORKOVER RECORDS🛠️
