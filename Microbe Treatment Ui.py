@@ -1456,7 +1456,7 @@ def main():
                 #if 'PreDaysActual' in display_cumulative.columns and 'PostDaysActual' in display_cumulative.columns:
                     # Reorder columns to include the new ones
                     #column_order = ['TreatmentDate', 'PreOilAvg', 'PostOilAvg', 'OilGain', 'CumulativeGain', 
-                                'PreDaysActual', 'PostDaysActual']
+                                #'PreDaysActual', 'PostDaysActual']
                     # Only include columns that actually exist
                     #available_columns = [col for col in column_order if col in display_cumulative.columns]
                     #display_cumulative = display_cumulative[available_columns]
