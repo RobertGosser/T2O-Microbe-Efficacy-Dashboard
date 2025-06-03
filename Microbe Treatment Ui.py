@@ -1410,71 +1410,71 @@ def main():
                 st.error(f"Insufficient data for analysis of well {selected_well}. Need at least {MIN_DATA_DAYS} days of data in both pre and post periods.")
 
     tab_index += 1
-    '''
+    
     # =============================================================================
     # TAB 3: TREATMENT IMPACT📊 - UPDATED VERSION
     # =============================================================================
-    with tabs[tab_index]:
-        st.subheader(f"Treatment Impact Analysis - {selected_well}")
+    #with tabs[tab_index]:
+        #st.subheader(f"Treatment Impact Analysis - {selected_well}")
         
-        with st.spinner("Computing cumulative impact..."):
+        #with st.spinner("Computing cumulative impact..."):
             # ✅ FIXED: Ensure compute_cumulative_impact uses full post-window
             # This function should be updated to pass use_full_post_window=True to any 
             # internal process_well_analysis calls
-            cumulative_impact = compute_cumulative_impact(selected_well, prod_history, treatments, 
-                                                        PRE_TREATMENT_TARGET_DAYS, POST_TREATMENT_TARGET_DAYS,
-                                                        use_full_post_window=True)
+            #cumulative_impact = compute_cumulative_impact(selected_well, prod_history, treatments, 
+                                                        #PRE_TREATMENT_TARGET_DAYS, POST_TREATMENT_TARGET_DAYS,
+                                                        #use_full_post_window=True)
             
-            if not cumulative_impact.empty:
+            #if not cumulative_impact.empty:
                 # Summary metrics
-                total_treatments = len(cumulative_impact)
-                total_gain = cumulative_impact['CumulativeGain'].iloc[-1]
-                avg_gain_per_treatment = cumulative_impact['OilGain'].mean()
+                #total_treatments = len(cumulative_impact)
+                #total_gain = cumulative_impact['CumulativeGain'].iloc[-1]
+                #avg_gain_per_treatment = cumulative_impact['OilGain'].mean()
                 
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.metric("Total Treatments", total_treatments)
-                with col2:
-                    st.metric("Total Oil Gain", f"{total_gain:.2f} BBL/day")
-                with col3:
-                    st.metric("Avg Gain per Treatment", f"{avg_gain_per_treatment:.2f} BBL/day")
+                #col1, col2, col3 = st.columns(3)
+                #with col1:
+                    #st.metric("Total Treatments", total_treatments)
+                #with col2:
+                    #st.metric("Total Oil Gain", f"{total_gain:.2f} BBL/day")
+                #with col3:
+                    #st.metric("Avg Gain per Treatment", f"{avg_gain_per_treatment:.2f} BBL/day")
                 
                 # Cumulative impact chart
-                cum_fig = create_cumulative_impact_chart(cumulative_impact, selected_well)
-                st.plotly_chart(cum_fig, use_container_width=True)
+                #cum_fig = create_cumulative_impact_chart(cumulative_impact, selected_well)
+                #st.plotly_chart(cum_fig, use_container_width=True)
 
                 # ✅ UPDATED CAPTION: Now references full post-window analysis
-                st.caption("Pre-window: All non-zero days before each treatment · Post-window: All available data")
+                #st.caption("Pre-window: All non-zero days before each treatment · Post-window: All available data")
 
                 # Treatment details table with NEW COLUMNS
-                st.subheader("Individual Treatment Summary")
-                display_cumulative = cumulative_impact.copy()
-                display_cumulative['TreatmentDate'] = safe_format_date(display_cumulative['TreatmentDate'])
+                #st.subheader("Individual Treatment Summary")
+                #display_cumulative = cumulative_impact.copy()
+                #display_cumulative['TreatmentDate'] = safe_format_date(display_cumulative['TreatmentDate'])
                 
                 # ADD Pre Days and Post Days columns if they exist in the cumulative_impact DataFrame
                 # (These should be available if compute_cumulative_impact calls the updated process_single_treatment_analysis)
-                if 'PreDaysActual' in display_cumulative.columns and 'PostDaysActual' in display_cumulative.columns:
+                #if 'PreDaysActual' in display_cumulative.columns and 'PostDaysActual' in display_cumulative.columns:
                     # Reorder columns to include the new ones
-                    column_order = ['TreatmentDate', 'PreOilAvg', 'PostOilAvg', 'OilGain', 'CumulativeGain', 
+                    #column_order = ['TreatmentDate', 'PreOilAvg', 'PostOilAvg', 'OilGain', 'CumulativeGain', 
                                 'PreDaysActual', 'PostDaysActual']
                     # Only include columns that actually exist
-                    available_columns = [col for col in column_order if col in display_cumulative.columns]
-                    display_cumulative = display_cumulative[available_columns]
+                    #available_columns = [col for col in column_order if col in display_cumulative.columns]
+                    #display_cumulative = display_cumulative[available_columns]
                     
                     # Rename columns for better display
-                    display_cumulative = display_cumulative.rename(columns={
-                        'PreDaysActual': 'Pre Days',
-                        'PostDaysActual': 'Post Days'
-                    })
+                    #display_cumulative = display_cumulative.rename(columns={
+                        #'PreDaysActual': 'Pre Days',
+                        #'PostDaysActual': 'Post Days'
+                    #})
                 
-                display_cumulative = display_cumulative.round(2)
-                st.dataframe(display_cumulative, use_container_width=True)
+                #display_cumulative = display_cumulative.round(2)
+                #st.dataframe(display_cumulative, use_container_width=True)
 
-            else:
-                st.warning(f"No treatment impact data available for well {selected_well}")
+            #else:
+                #st.warning(f"No treatment impact data available for well {selected_well}")
 
-    tab_index += 1
-    '''
+    #tab_index += 1
+   
     # =============================================================================
     # TAB 4: WORKOVER RECORDS🛠️
     # =============================================================================
