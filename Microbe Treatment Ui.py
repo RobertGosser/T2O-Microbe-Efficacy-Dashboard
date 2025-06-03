@@ -1201,7 +1201,7 @@ def main():
     if well_coords.empty:
         tabs = st.tabs([
             "📈 Production Analysis",
-            #"📊 Treatment Impact",
+            "📊 Treatment Records",
             "🛠️ Workover Records",
             "📋 Program Summary",
             "💰 Economics"
@@ -1211,7 +1211,7 @@ def main():
         tabs = st.tabs([
             "🗺️ Well Map",
             "📈 Production Analysis",
-            #"📊 Treatment Impact", 
+            "📊 Treatment Records", 
             "🛠️ Workover Records",
             "📋 Program Summary",
             "💰 Economics"
@@ -1414,8 +1414,23 @@ def main():
     # =============================================================================
     # TAB 3: TREATMENT IMPACT📊 - UPDATED VERSION
     # =============================================================================
-    #with tabs[tab_index]:
-        #st.subheader(f"Treatment Impact Analysis - {selected_well}")
+    with tabs[tab_index]:
+        st.subheader(f"Treatment Records - {selected_well}")
+        trt_filtered = treatments[treatments['Well'] == selected_well].copy()
+        
+        if not trt_filtered.empty:
+            # Safely format dates for display
+            trt_display = trt_filtered.copy()
+            trt_display['TreatmentDate'] = safe_format_date(trt_filtered['TreatmentDate'])
+            st.dataframe(trt_display, hide_index=True, use_container_width=True)
+            
+            # Treatment type distribution
+            if 'TreatmentType' in trt_filtered.columns:
+                freq = trt_filtered['TreatmentType'].value_counts()
+                fig = px.pie(values=freq.values, names=freq.index, title="Treatment Type Distribution")
+                st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("No treatment records found for selected well.")
         
         #with st.spinner("Computing cumulative impact..."):
             # ✅ FIXED: Ensure compute_cumulative_impact uses full post-window
