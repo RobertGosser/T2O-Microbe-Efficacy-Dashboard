@@ -51,7 +51,7 @@ MIN_DATA_DAYS = 30               # Minimum Days of Valid Data Required to Includ
 st.set_page_config(
     page_title="Red Rock Resources Microbe Dashboard",  # Page Title 
     layout="wide",                       # Use Full Browser Width for Display
-    page_icon="T20_White.png"            # Custom Favicon
+    page_icon="R3-Logo.jpg"              # Custom Favicon
 )
 # =============================================================================
 
@@ -1154,7 +1154,7 @@ def main():
     
     # Try to load logo
     try:
-        st.image("T20_White.png", width=200)
+        st.image("R3-Logo.jpg", width=200)
     except:
         pass
     
