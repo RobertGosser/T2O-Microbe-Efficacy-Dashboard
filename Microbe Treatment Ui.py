@@ -1,6 +1,6 @@
 # =============================================================================
 # Microbe Treatment Efficacy Dashboard
-# T2O Energy - A Streamlit Application
+# Red Rock Resources - A Streamlit Application
 # Version: 8.0
 # Author: Robert W. Gosser & Enhanced by Claude
 #
@@ -12,7 +12,7 @@
 #
 # FILES USED:
 # -----------
-# - T2O Daily Production (as of 05.12.2025) -- .csv File (Daily Well Production)
+# - Red Rock Resources Daily Production (as of 05.12.2025) -- .csv File (Daily Well Production)
 #   > Note: This porduction file is updated manually and should always be 
 #     Updated with the most recent version.
 # - Bug Treatments (as of 05.20.2025) -- .csv File (Treatment Dates and Types)
@@ -49,7 +49,7 @@ MIN_DATA_DAYS = 30               # Minimum Days of Valid Data Required to Includ
 # Section 3: Streamlit App Configuration
 
 st.set_page_config(
-    page_title="T2O Microbe Dashboard",  # Page Title 
+    page_title="Red Rock Resources Microbe Dashboard",  # Page Title 
     layout="wide",                       # Use Full Browser Width for Display
     page_icon="T20_White.png"            # Custom Favicon
 )
@@ -1150,7 +1150,7 @@ def main():
     well_coords = load_coordinate_data()
     
     # Header
-    st.title("T2O Microbe Treatment Efficacy Dashboard")
+    st.title("Red Rock Resources Microbe Treatment Efficacy Dashboard")
     
     # Try to load logo
     try:
